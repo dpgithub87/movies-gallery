@@ -1,27 +1,6 @@
-import Axios, { AxiosResponse, Canceler } from "axios";
-import { Movie } from "../types/types";
-import { MoviesApiHost } from "./apiHost";
-
-const axios = () =>
-  Axios.create({
-    baseURL: MoviesApiHost,
-    timeout: 30000
-});
-
-const CancelToken = Axios.CancelToken;
-export let Cancel: Canceler;
-
-const getHeaders = () => {
-    return {
-      headers: {
-        ContentType: "application/json"
-      },
-      cancelToken: new CancelToken(function executor(cancelToken) {
-        Cancel = cancelToken;
-      })
-    };
-  };
-  
+import { AxiosResponse } from "axios";
+import { Movie } from "../../types/types";  
+import { axios, getHeaders } from "./utils";
 
   export const GetAllMovies = (): Promise<AxiosResponse> =>
     axios()
@@ -54,10 +33,5 @@ const getHeaders = () => {
       .catch((error) => {
         throw error; //Open error modal
     });
-  
 
-    // ( TO DO ) Login
-
-
-    // ( TO DO ) Register
     

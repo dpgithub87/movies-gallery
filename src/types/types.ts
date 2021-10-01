@@ -27,3 +27,7 @@ export interface Still {
     still: string;
     movieId: number;
 }
+
+export type ErrorBoundaryStateType = {
+    hasError: Boolean;
+};
