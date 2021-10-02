@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
-using MoviesGallery.Database.DatabaseModels;
+using MoviesGallery.Models.DatabaseModels;
 
 namespace MoviesGallery.Database
 {
@@ -17,12 +17,11 @@ namespace MoviesGallery.Database
         {
             var optionsBuilder = new DbContextOptionsBuilder<MoviesDbContext>();
             optionsBuilder.UseSqlServer("Server=(local);Database=movies-gallery;Trusted_Connection=True;");
-
             return new MoviesDbContext(optionsBuilder.Options);
         }
 
 
-        public virtual DbSet<Movie> Movies { get; set; }
+        public virtual DbSet<Movies> Movies { get; set; }
 
         public virtual DbSet<SoundEffects> SoundEffects { get; set; }
 

@@ -19,7 +19,8 @@ namespace MoviesGallery.Database.Migrations
                     Language = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Plot = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Poster = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Poster = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UniqueIdentifier = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {

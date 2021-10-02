@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using MoviesGallery.Backend.Models;
+using MoviesGallery.Models.Interfaces.Repository;
+using MoviesGallery.Models.Interfaces.ViewModels;
+using MoviesGallery.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -8,23 +10,25 @@ using System.Threading.Tasks;
 namespace MoviesGallery.Backend.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
-    [ApiVersion("1.0")]
-    [ApiVersion("2.0")]
     public class MoviesController : Controller
     {
         private readonly ILogger<MoviesController> _logger;
 
-        public MoviesController(ILogger<MoviesController> logger)
+        private readonly IMoviesRepository _moviesRepository;
+
+        public MoviesController(ILogger<MoviesController> logger, IMoviesRepository moviesRepository)
         {
             _logger = logger;
+
+            _moviesRepository = moviesRepository;
         }
 
-        [HttpGet("Movies")]
+        [HttpGet]
         [MapToApiVersion("2.0")]
+        [Route("api/v2/[controller]/GetAllMovies")]
         public async Task<IActionResult> GetAllMovies()
         {
-            List<Movie> allMovies = new List<Movie>();
+            List<IMovieViewModel> allMovies = new List<IMovieViewModel>();
 
             try
             {
@@ -39,15 +43,16 @@ namespace MoviesGallery.Backend.Controllers
             return Ok(allMovies);
         }
 
-        [HttpGet("Movie")]
+        [HttpGet]
         [MapToApiVersion("2.0")]
-        public async Task<IActionResult> GetMovie(string movieTitle)
+        [Route("api/v2/[controller]/GetMovieByTitle")]
+        public async Task<IActionResult> GetMovieByTitle(string movieTitle)
         {
-            Movie movie = new Movie();
+            IMovieViewModel movie = new MovieViewModel();
 
             try
             {
-                movie = await GetMovieByTitle(movieTitle);
+                movie = await GetMovie(movieTitle);
             }
             catch (Exception e)
             {
@@ -58,9 +63,10 @@ namespace MoviesGallery.Backend.Controllers
             return Ok(movie);
         }
 
-        [HttpPost("Movie")]
+        [HttpPost]
         [MapToApiVersion("2.0")]
-        public async Task<IActionResult> AddMovie([FromBody] Movie movie)
+        [Route("api/v2/[controller]/AddMovie")]
+        public async Task<IActionResult> AddMovie([FromBody] MovieViewModel movie)
         {
             if (!ModelState.IsValid)
             {
@@ -80,9 +86,10 @@ namespace MoviesGallery.Backend.Controllers
             return Ok(movie);
         }
 
-        [HttpPut("Movie")]
+        [HttpPut]
         [MapToApiVersion("2.0")]
-        public async Task<IActionResult> UpdateMovie([FromBody] Movie movie)
+        [Route("api/v2/[controller]/UpdateMovie")]
+        public async Task<IActionResult> UpdateMovie([FromBody] MovieViewModel movieviewModel)
         {
             if (!ModelState.IsValid)
             {
@@ -91,7 +98,7 @@ namespace MoviesGallery.Backend.Controllers
 
             try
             {
-                await InsertOrUpdateMovie(movie);
+                await InsertOrUpdateMovie(movieviewModel);
             }
             catch (Exception e)
             {
@@ -99,50 +106,61 @@ namespace MoviesGallery.Backend.Controllers
                 return BadRequest(500);
             }
 
-            return Ok(movie);
+            return Ok(movieviewModel);
         }
 
-        private async Task InsertOrUpdateMovie(Movie movie)
+        private async Task InsertOrUpdateMovie(IMovieViewModel movieviewModel)
         {
-            bool movieExists = await CheckIfMovieExistsInDb(movie);
+            bool movieExists = await CheckIfMovieExistsInDb(movieviewModel.UniqueIdentifier);
             if (movieExists)
             {
-                await InsertAMovie(movie);
+                await ModifyMovie(movieviewModel);
             }
             else 
             {
-                await UpdateAMovie(movie);
+                await InsertMovie(movieviewModel);
             }
         }
 
-        private async Task<bool> CheckIfMovieExistsInDb(Movie movie)
+        private async Task<bool> CheckIfMovieExistsInDb(string uniqueIdentifier)
         {
-            _logger.LogInformation($"Checking if a movie exists: {movie}.");
-            throw new NotImplementedException();
+            _logger.LogInformation($"Checking if a movie exists: {uniqueIdentifier}.");
+            
+            bool movieExists = await Task.Run(() =>_moviesRepository.CheckIfMovieExists(uniqueIdentifier));
+
+            return movieExists;
         }
 
-        private async Task UpdateAMovie(Movie movie)
+        private async Task ModifyMovie(IMovieViewModel movieviewModel)
         {
-            _logger.LogInformation($"Updating a movie: {movie}.");
-            throw new NotImplementedException();
+            _logger.LogInformation($"Updating a movie: {movieviewModel}.");
+
+            await _moviesRepository.UpdateMovieAsync(movieviewModel);
         }
 
-        private async Task InsertAMovie(Movie movie)
+        private async Task InsertMovie(IMovieViewModel movie)
         {
-            _logger.LogInformation($"Adding a movie: {movie}.");
-            throw new NotImplementedException();
+            _logger.LogInformation($"Adding a new movie: {movie}.");
+
+            await _moviesRepository.AddMovieAsync(movie);
         }
 
-        private async Task<Movie> GetMovieByTitle(string movieTitle)
+        private async Task<IMovieViewModel> GetMovie(string movieTitle)
         {
             _logger.LogInformation($"Getting movie by title : {movieTitle}.");
-            throw new NotImplementedException();
+
+            IMovieViewModel movieViewModel = await _moviesRepository.GetMovieByTitleAsync(movieTitle);
+
+            return movieViewModel;
         }
 
-        private async Task<List<Movie>> GetAllMoviesList()
+        private async Task<List<IMovieViewModel>> GetAllMoviesList()
         {
-            _logger.LogInformation($"Get all movies.");
-            throw new NotImplementedException();
+            _logger.LogInformation($"Getting all movies.");
+            
+            List<IMovieViewModel> allMoviesViewModel = await _moviesRepository.GetAllMoviesAsync();
+
+            return allMoviesViewModel;
         }
     }
 }

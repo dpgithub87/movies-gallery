@@ -1,16 +1,17 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.SwaggerGen;
+using MoviesGallery.Database;
+using MoviesGallery.Models.Interfaces.Repository;
+using MoviesGallery.Repository;
 using System;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 
 namespace MoviesGallery.Backend
 {
@@ -37,7 +38,17 @@ namespace MoviesGallery.Backend
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            string dbConnectionString = Configuration["Database:ConnectionString"];
+
+            DbContextOptionsBuilder<MoviesDbContext> contextBuilder = new DbContextOptionsBuilder<MoviesDbContext>();
+            DataSeeder.SeedData(new MoviesDbContext(contextBuilder
+                .UseSqlServer(dbConnectionString).Options));
             
+            contextBuilder.UseSqlServer(dbConnectionString);
+
+            services.AddDbContext<MoviesDbContext>(options => options.UseSqlServer(dbConnectionString), 
+                ServiceLifetime.Transient);
+
             services.AddApiVersioning(config =>
             {
                 config.DefaultApiVersion = new ApiVersion(1, 0);
@@ -48,12 +59,25 @@ namespace MoviesGallery.Backend
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("1.0", new OpenApiInfo { Title = "MoviesGallery.Backend v1.0", Version = "1.0" });
-                c.SwaggerDoc("2.0", new OpenApiInfo { Title = "MoviesGallery.Backend v2.0", Version = "2.0" });
-                
+                c.SwaggerDoc("2.0", new OpenApiInfo { Title = "MoviesGallery.Backend v2.0", Version = "2.0" }); 
                 c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
             });
 
+            services.AddScoped<IMoviesRepository, MoviesRepository>();
+
+            services.AddHealthChecks();
+
+            services.AddHealthChecks().AddDbContextCheck<MoviesDbContext>();
+            
             services.AddControllers();
+
+            services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
+            {
+                builder
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowAnyOrigin();
+            }));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -68,6 +92,8 @@ namespace MoviesGallery.Backend
                     options.SwaggerEndpoint("/swagger/2.0/swagger.json", "MoviesGallery.Backend v2.0");
                 });
             }
+
+            app.UseCors("CorsPolicy");
 
             app.UseHttpsRedirection();
 

@@ -18,7 +18,7 @@ namespace MoviesGallery.Database.Migrations
                 .HasAnnotation("ProductVersion", "5.0.10")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("MoviesGallery.Database.DatabaseModels.Movie", b =>
+            modelBuilder.Entity("MoviesGallery.Models.DatabaseModels.Movies", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -57,12 +57,16 @@ namespace MoviesGallery.Database.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UniqueIdentifier")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Movies");
                 });
 
-            modelBuilder.Entity("MoviesGallery.Database.DatabaseModels.SoundEffects", b =>
+            modelBuilder.Entity("MoviesGallery.Models.DatabaseModels.SoundEffects", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -83,7 +87,7 @@ namespace MoviesGallery.Database.Migrations
                     b.ToTable("SoundEffects");
                 });
 
-            modelBuilder.Entity("MoviesGallery.Database.DatabaseModels.Stills", b =>
+            modelBuilder.Entity("MoviesGallery.Models.DatabaseModels.Stills", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -104,9 +108,9 @@ namespace MoviesGallery.Database.Migrations
                     b.ToTable("Stills");
                 });
 
-            modelBuilder.Entity("MoviesGallery.Database.DatabaseModels.SoundEffects", b =>
+            modelBuilder.Entity("MoviesGallery.Models.DatabaseModels.SoundEffects", b =>
                 {
-                    b.HasOne("MoviesGallery.Database.DatabaseModels.Movie", "Movie")
+                    b.HasOne("MoviesGallery.Models.DatabaseModels.Movies", "Movie")
                         .WithMany("SoundEffects")
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -115,9 +119,9 @@ namespace MoviesGallery.Database.Migrations
                     b.Navigation("Movie");
                 });
 
-            modelBuilder.Entity("MoviesGallery.Database.DatabaseModels.Stills", b =>
+            modelBuilder.Entity("MoviesGallery.Models.DatabaseModels.Stills", b =>
                 {
-                    b.HasOne("MoviesGallery.Database.DatabaseModels.Movie", "Movie")
+                    b.HasOne("MoviesGallery.Models.DatabaseModels.Movies", "Movie")
                         .WithMany("Stills")
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -126,7 +130,7 @@ namespace MoviesGallery.Database.Migrations
                     b.Navigation("Movie");
                 });
 
-            modelBuilder.Entity("MoviesGallery.Database.DatabaseModels.Movie", b =>
+            modelBuilder.Entity("MoviesGallery.Models.DatabaseModels.Movies", b =>
                 {
                     b.Navigation("SoundEffects");
 

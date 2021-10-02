@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using MoviesGallery.Models.Interfaces.ViewModels;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace MoviesGallery.Backend.Models
+namespace MoviesGallery.Models.ViewModels
 {
-    public class Movie
+    public class MovieViewModel : IMovieViewModel
     {
         [Required]
         public string Title { get; set; }
@@ -30,9 +31,12 @@ namespace MoviesGallery.Backend.Models
         public string Poster { get; set; }
 
         [Required]
-        public List<string> SoundEffects { get; set; }
+        public string UniqueIdentifier { get; set; }
 
         [Required]
-        public List<string> Stills { get; set; }
+        public List<SoundEffectViewModel> SoundEffects { get; set; }
+
+        [Required]
+        public List<StillViewModel> Stills { get; set; }
     }
 }

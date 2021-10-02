@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoviesGallery.Backend", "Mo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoviesGallery.Database", "MoviesGallery.Database\MoviesGallery.Database.csproj", "{0ACA2C99-CBE1-4D38-9712-0601BDEB8758}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoviesGallery.Repository", "MoviesGallery.Repository\MoviesGallery.Repository.csproj", "{D30D11AC-8A27-4311-BFA4-D69B52CD559F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoviesGallery.Models", "MoviesGallery.ViewModels\MoviesGallery.Models.csproj", "{348A568E-1ADC-4586-8176-DA7C3A6EE8FB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{0ACA2C99-CBE1-4D38-9712-0601BDEB8758}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0ACA2C99-CBE1-4D38-9712-0601BDEB8758}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0ACA2C99-CBE1-4D38-9712-0601BDEB8758}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D30D11AC-8A27-4311-BFA4-D69B52CD559F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D30D11AC-8A27-4311-BFA4-D69B52CD559F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D30D11AC-8A27-4311-BFA4-D69B52CD559F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D30D11AC-8A27-4311-BFA4-D69B52CD559F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{348A568E-1ADC-4586-8176-DA7C3A6EE8FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{348A568E-1ADC-4586-8176-DA7C3A6EE8FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{348A568E-1ADC-4586-8176-DA7C3A6EE8FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{348A568E-1ADC-4586-8176-DA7C3A6EE8FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

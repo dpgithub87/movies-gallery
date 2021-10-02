@@ -1,11 +1,11 @@
-﻿using MoviesGallery.Database.DatabaseModels;
+﻿using MoviesGallery.Models.Interfaces.Database;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MoviesGallery.Database.DatabaseModels
+namespace MoviesGallery.Models.DatabaseModels
 {
-    public class Movie
+    public class Movies : IMovies
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
@@ -33,6 +33,9 @@ namespace MoviesGallery.Database.DatabaseModels
 
         [Required]
         public string Poster { get; set; }
+
+        [Required]
+        public string UniqueIdentifier { get; set; }
 
         [Required]
         public List<SoundEffects> SoundEffects { get; set; }
