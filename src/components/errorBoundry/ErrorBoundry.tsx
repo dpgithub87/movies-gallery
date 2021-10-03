@@ -2,7 +2,7 @@ import { Button } from "@mui/material";
 import { Component } from "react";
 import { ErrorBoundaryStateType } from "../../types/types";
 
-class ErrorBoundary extends Component<any, ErrorBoundaryStateType> {
+class ErrorBoundry extends Component<any, ErrorBoundaryStateType> {
   constructor(props: any) {
     super(props);
     this.state = { hasError: false };
@@ -32,4 +32,4 @@ class ErrorBoundary extends Component<any, ErrorBoundaryStateType> {
   }
 }
 
-export default ErrorBoundary;
+export default ErrorBoundry;

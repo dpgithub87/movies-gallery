@@ -7,11 +7,12 @@ export interface Movie {
     Title: string;
     ImdID: string;
     ListingType:string;
-    ImdbRating: string
+    ImdbRating: string;
     Language: string;
     Location: string;
     Plot: string;
     Poster: string;
+    UniqueIdentifier: string;
     SoundEffects: Array<SoundEffect>;
     Stills: Array<Still>;
 }
@@ -31,3 +32,13 @@ export interface Still {
 export type ErrorBoundaryStateType = {
     hasError: Boolean;
 };
+
+export type Language = {
+    value: string;
+    label: string;
+}
+
+export type Location = {
+    value: string;
+    label: string;
+}

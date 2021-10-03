@@ -16,6 +16,7 @@ const Footer: FunctionComponent = () => {
         >
           All rights reserved. Copyright
           <Copyright className="copyWriteIcon" />
+          2021
         </Typography>
         </Box>
         </>

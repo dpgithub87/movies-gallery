@@ -2,15 +2,15 @@
 
 import { render, screen } from "@testing-library/react";
 import { shallow, ShallowWrapper} from "enzyme";
-import Navigation from "../components/navigation/Navigation";
-import findByTestAttribute from "../utils/findByTestAttribute";
+import Footer from "../../components/footer/Footer";
+import findByTestAttribute from "../../utils/findByTestAttribute";
 
 const SetUp: Function = (props: Object = {}) => {
-  const component: Object = shallow(<Navigation />);
+  const component: Object = shallow(<Footer />);
   return component;
 };
 
-describe("Navigation page", () => {
+describe("Footer page", () => {
   let component: Object;
   beforeEach(() => {
     component = SetUp();
@@ -30,7 +30,7 @@ describe("Navigation page", () => {
 
     describe("Component text checks tests:", () => {
         // test("Should render the correct text.", () => {
-        //   render(<Navigation />);
+        //   render(<Footer />);
         //   const headerText = screen.getByText(/Welcome to /i);
         //   const btnText = screen.getByText(/Continue/i);
     

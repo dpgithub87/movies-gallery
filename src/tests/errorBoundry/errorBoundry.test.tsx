@@ -1,16 +1,14 @@
-
-
 import { render, screen } from "@testing-library/react";
 import { shallow, ShallowWrapper} from "enzyme";
-import Footer from "../components/footer/Footer";
-import findByTestAttribute from "../utils/findByTestAttribute";
+import ErrorBoundry from "../../components/errorBoundry/ErrorBoundry";
+import findByTestAttribute from "../../utils/findByTestAttribute";
 
 const SetUp: Function = (props: Object = {}) => {
-  const component: Object = shallow(<Footer />);
+  const component: Object = shallow(<ErrorBoundry />);
   return component;
 };
 
-describe("Footer page", () => {
+describe("Error boundry", () => {
   let component: Object;
   beforeEach(() => {
     component = SetUp();
@@ -30,7 +28,7 @@ describe("Footer page", () => {
 
     describe("Component text checks tests:", () => {
         // test("Should render the correct text.", () => {
-        //   render(<Footer />);
+        //   render(<ErrorBoundry />);
         //   const headerText = screen.getByText(/Welcome to /i);
         //   const btnText = screen.getByText(/Continue/i);
     
