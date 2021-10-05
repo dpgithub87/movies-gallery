@@ -5,63 +5,23 @@ import { HomePagePropsType, Language, Location, Movie } from "../../types/types"
 import ErrorModal from "../errorModal/ErrorModal";
 import * as MoviesRequests from "../../apis/moviesApi/moviesRequests";
 import "../../styles/pages/Home.scss"
+import { MovieFilter } from "@mui/icons-material";
 
 const Home: FunctionComponent<PropsWithChildren<HomePagePropsType>> = ({
     history
   }): ReactElement => {
   
-    const [language, setLanguage] = useState<string>("English");
-    const [location, setLocation] = useState<string>("United States");
-    const [searchCriteria, setSearchCriteria] = useState<string>("");
     const [movies, setMovies] = useState<Movie[]>([]);
     const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
     const [pageNumber, setPageNumber] = useState<number>(1);
     
-    const languages: Array<Language> = [
-        {
-          value: 'English',
-          label: 'English',
-        },
-        {
-          value: 'Spanish',
-          label: 'Spanish',
-        },
-        {
-          value: 'Italian',
-          label: 'Italian',
-        },
-        {
-          value: 'French',
-          label: 'French',
-        },
-      ];
-
-    const locations: Array<Location> = [
-        {
-          value: 'United States',
-          label: 'United States',
-        },
-        {
-          value: 'United Kingdom',
-          label: 'United Kingdom',
-        },
-        {
-          value: 'Italy',
-          label: 'Italy',
-        },
-        {
-          value: 'France',
-          label: 'France',
-        },
-      ];
-
       useEffect(() => {
-          getAllMovies();
+        getAllMovies();
       },[]);
       
-      const maxDescriptionCharacterLenght: number = 150; 
+      const maxDescriptionCharacterLenght: number = 150;
       
-      const getAllMovies: Function = (): void => {
+      const getAllMovies = (): void => {
         MoviesRequests.GetAllMovies()
           .then((res: any) => {
             const allMovies: Movie[] = res.data;
@@ -75,18 +35,24 @@ const Home: FunctionComponent<PropsWithChildren<HomePagePropsType>> = ({
       };
 
     const handleLanguageChange = (e: any) => {
-        setLanguage(e.target.value);
-      };
+      const moviesList: Movie[] = JSON.parse(localStorage.getItem("movies")!);
+      const filteredMovies: Movie[] = moviesList.filter(m => m.language.includes(e.target.value));
+      setMovies(filteredMovies);
+    };
 
-    const handleSearchCriteria = (e: any) => {
-        setSearchCriteria(e.target.value);
-      };
+    const handleSearchCriteriaByTitle = (e: any) => {
+      const moviesList: Movie[] = JSON.parse(localStorage.getItem("movies")!);
+      const filteredMovies: Movie[] = moviesList.filter(m => m.title.includes(e.target.value));
+      setMovies(filteredMovies);
+    };
 
-      const handleLocationChange = (e: any) => {
-        setLocation(e.target.value);
-      };
+    const handleLocationChange = (e: any) => {
+      const moviesList: Movie[] = JSON.parse(localStorage.getItem("movies")!);
+      const filteredMovies: Movie[] = moviesList.filter(m => m.location.includes(e.target.value));
+      setMovies(filteredMovies);
+    };
 
-      const closeErrorModal: Function = (): void => {
+      const closeErrorModal = (): void => {
         setShowErrorModal(!showErrorModal);
       };
 
@@ -127,44 +93,30 @@ const Home: FunctionComponent<PropsWithChildren<HomePagePropsType>> = ({
               spacing={3}
               justifyContent="center"
             >
-                <TextField
+                  <TextField
                     id="outlined-search"
                     label="Search movies by title"
                     type="search"
                     helperText="Please search a movie by title"
-                    value={searchCriteria}
-                    onChange={handleSearchCriteria}
+                    onChange={handleSearchCriteriaByTitle}
                     variant="outlined"
                     className="moviesSearchBar"
                     />
 
                   <TextField
                     id="outlined-select-language"
-                    select
                     label="Select Movie Language"
-                    value={language}
                     onChange={handleLanguageChange}
-                    className="moviesSelectLanguage">
-                    {languages.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                          {option.label}
-                      </MenuItem>
-                    ))}
-                  </TextField>
+                    className="moviesSelectLanguage"
+                  />
 
                   <TextField
                     id="outlined-select-location"
-                    select
                     label="Select Movie Location"
-                    value={location}
                     onChange={handleLocationChange}
-                    className="moviesSelectLocation">
-                    {locations.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
-                            {option.label}
-                        </MenuItem>
-                    ))}
-                  </TextField>
+                    className="moviesSelectLocation"
+                  />
+
             </Stack>
           </Container>
           <Container className="pageNumberContainer">
@@ -190,8 +142,16 @@ const Home: FunctionComponent<PropsWithChildren<HomePagePropsType>> = ({
                       {movie.title}
                     </Typography>
                     <Typography>
-                    {movie.plot.substr(0, Math.min(movie.plot.length, maxDescriptionCharacterLenght))}
-                    {movie.plot.length > maxDescriptionCharacterLenght && '...'}
+                      {movie.plot.substr(0, Math.min(movie.plot.length, maxDescriptionCharacterLenght))}
+                      {movie.plot.length > maxDescriptionCharacterLenght && '...'}
+                    </Typography>
+                    <br/>
+                    <Typography>
+                      <strong>Language:</strong> {movie.language}
+                    </Typography>
+                    <br/>
+                    <Typography>
+                    <strong>Location:</strong> {movie.location}
                     </Typography>
                   </CardContent>
                   <CardActions>
