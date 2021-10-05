@@ -1,10 +1,10 @@
-import { Button, Card, CardActions, CardContent, CardMedia, Container, Grid, MenuItem, Stack, TextField, Typography } from "@mui/material";
+import { Button, Card, CardActions, CardContent, CardMedia, Container, Grid, MenuItem, Pagination, Stack, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { FunctionComponent, PropsWithChildren, ReactElement, useEffect, useState } from "react";
 import { HomePagePropsType, Language, Location, Movie } from "../../types/types";
+import ErrorModal from "../errorModal/ErrorModal";
 import * as MoviesRequests from "../../apis/moviesApi/moviesRequests";
 import "../../styles/pages/Home.scss"
-import ErrorModal from "../errorModal/ErrorModal";
 
 const Home: FunctionComponent<PropsWithChildren<HomePagePropsType>> = ({
     history
@@ -15,7 +15,8 @@ const Home: FunctionComponent<PropsWithChildren<HomePagePropsType>> = ({
     const [searchCriteria, setSearchCriteria] = useState<string>("");
     const [movies, setMovies] = useState<Movie[]>([]);
     const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
-
+    const [pageNumber, setPageNumber] = useState<number>(1);
+    
     const languages: Array<Language> = [
         {
           value: 'English',
@@ -54,16 +55,17 @@ const Home: FunctionComponent<PropsWithChildren<HomePagePropsType>> = ({
         },
       ];
 
-
-      const moviesEx = [1,2,3,4,5,6,7,8,9];
       useEffect(() => {
           getAllMovies();
       },[]);
+      
+      const maxDescriptionCharacterLenght: number = 150; 
       
       const getAllMovies: Function = (): void => {
         MoviesRequests.GetAllMovies()
           .then((res: any) => {
             const allMovies: Movie[] = res.data;
+            localStorage.setItem("movies", JSON.stringify(allMovies));
             setMovies(allMovies);
           })
           .catch((err: any) => {
@@ -81,13 +83,17 @@ const Home: FunctionComponent<PropsWithChildren<HomePagePropsType>> = ({
       };
 
       const handleLocationChange = (e: any) => {
-        setSearchCriteria(e.target.value);
+        setLocation(e.target.value);
       };
 
       const closeErrorModal: Function = (): void => {
         setShowErrorModal(!showErrorModal);
       };
-      
+
+      const handlePageChange = (event: any, value: any): void => {
+        setPageNumber(value);
+      };
+
     return (
         <main>
         <Box
@@ -132,21 +138,21 @@ const Home: FunctionComponent<PropsWithChildren<HomePagePropsType>> = ({
                     className="moviesSearchBar"
                     />
 
-                <TextField
+                  <TextField
                     id="outlined-select-language"
                     select
                     label="Select Movie Language"
                     value={language}
                     onChange={handleLanguageChange}
                     className="moviesSelectLanguage">
-                {languages.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                        {option.label}
-                    </MenuItem>
-                ))}
-            </TextField>
+                    {languages.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                          {option.label}
+                      </MenuItem>
+                    ))}
+                  </TextField>
 
-            <TextField
+                  <TextField
                     id="outlined-select-location"
                     select
                     label="Select Movie Location"
@@ -158,42 +164,47 @@ const Home: FunctionComponent<PropsWithChildren<HomePagePropsType>> = ({
                             {option.label}
                         </MenuItem>
                     ))}
-            </TextField>
-
+                  </TextField>
             </Stack>
           </Container>
+          <Container className="pageNumberContainer">
+            <Typography>Page: {pageNumber}</Typography>
+          </Container>
         </Box>
-
         <Container maxWidth="lg">
           <Grid container spacing={4}>
-            {moviesEx.map((m) => (
-              <Grid item key={m} xs={12} sm={6} md={4}>
+            {movies.slice(((pageNumber-1)*3), 3+ (pageNumber-1)).map((movie, i) => (
+              <Grid item key={i} xs={12} sm={6} md={4}>
                 <Card
-                  sx={{ height: '80%', display: 'flex', flexDirection: 'column' }}
+                  sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
                 >
                   <CardMedia
                     component="img"
-                    image="https://source.unsplash.com/random"
+                    className="movieCardImage"
+                    onClick={() => history.push(`/details/${movie.uniqueIdentifier}`)}
+                    image={movie.poster}
                     alt="random"
-                    sx={{ height: '50%' }}
                   />
                   <CardContent sx={{ flexGrow: 1 }}>
                     <Typography gutterBottom variant="h5" component="h2">
-                      Heading
+                      {movie.title}
                     </Typography>
                     <Typography>
-                      This is a media card. You can use this section to describe the
-                      content.
+                    {movie.plot.substr(0, Math.min(movie.plot.length, maxDescriptionCharacterLenght))}
+                    {movie.plot.length > maxDescriptionCharacterLenght && '...'}
                     </Typography>
                   </CardContent>
                   <CardActions>
-                    <Button size="small">Details</Button>
-                    <Button size="small">Book</Button>
+                    <Button size="small" onClick={() => history.push(`/details/${movie.uniqueIdentifier}`)}>Details</Button>
+                    <Button size="small" onClick={() => history.push(`/book/${movie.uniqueIdentifier}`)} >Book</Button>
                   </CardActions>
                 </Card>
               </Grid>
             ))}
           </Grid>
+          <Container className="paginationContainer">
+            <Pagination count={Math.ceil(movies.length / 3)} page={pageNumber} onChange={handlePageChange} />
+          </Container>
         </Container>
         {showErrorModal && (
             <ErrorModal isOpen={showErrorModal} handleClose={closeErrorModal} />

@@ -3,18 +3,18 @@ export interface HomePagePropsType {
 }
 
 export interface Movie {
-    Id: number;
-    Title: string;
-    ImdID: string;
-    ListingType:string;
-    ImdbRating: string;
-    Language: string;
-    Location: string;
-    Plot: string;
-    Poster: string;
-    UniqueIdentifier: string;
-    SoundEffects: Array<SoundEffect>;
-    Stills: Array<Still>;
+    id: number;
+    title: string;
+    imdID: string;
+    listingType:string;
+    imdbRating: string;
+    language: string;
+    location: string;
+    plot: string;
+    poster: string;
+    uniqueIdentifier: string;
+    soundEffects: Array<SoundEffect>;
+    stills: Array<Still>;
 }
 
 export interface SoundEffect {

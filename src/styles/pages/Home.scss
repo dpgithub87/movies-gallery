@@ -10,3 +10,21 @@
 .moviesSelectLocation {
     min-width: 250px !important;
 }
+
+.movieCardImage {
+    cursor: pointer;
+}
+
+.paginationContainer {
+    margin-top: 30px !important;
+    text-align: center;    
+}
+
+.MuiPagination-ul {
+    justify-content: center;
+}
+
+.pageNumberContainer {
+    margin-top: 30px !important;
+    text-align: center;
+}

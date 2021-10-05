@@ -4,10 +4,7 @@ import { axios, getHeaders } from "./utils";
 
   export const GetAllMovies = (): Promise<AxiosResponse> =>
     axios()
-      .get(
-        "/Movies/Movies",
-        getHeaders()
-      )
+      .get("/Movies/GetAllMovies/", getHeaders())
       .then((res) => res);
   
     export const GetMovie = (movieTitle: string): Promise<AxiosResponse> =>
