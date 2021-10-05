@@ -14,11 +14,32 @@ const Home: FunctionComponent<PropsWithChildren<HomePagePropsType>> = ({
     const [movies, setMovies] = useState<Movie[]>([]);
     const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
     const [pageNumber, setPageNumber] = useState<number>(1);
+    const [languageFilter, setLanguageFilter] = useState<string>("");
+    const [titleFilter, setTitleFilter] = useState<string>("");
     
       useEffect(() => {
         getAllMovies();
       },[]);
       
+      const languages: Array<Language> = [
+        {
+          value: 'English',
+          label: 'English',
+        },
+        {
+          value: 'Spanish',
+          label: 'Spanish',
+        },
+        {
+          value: 'Italian',
+          label: 'Italian',
+        },
+        {
+          value: 'French',
+          label: 'French',
+        },
+      ];
+
       const maxDescriptionCharacterLenght: number = 150;
       
       const getAllMovies = (): void => {
@@ -35,30 +56,42 @@ const Home: FunctionComponent<PropsWithChildren<HomePagePropsType>> = ({
       };
 
     const handleLanguageChange = (e: any) => {
-      const moviesList: Movie[] = JSON.parse(localStorage.getItem("movies")!);
-      const filteredMovies: Movie[] = moviesList.filter(m => m.language.includes(e.target.value));
-      setMovies(filteredMovies);
-    };
+      let filteredMovies: Movie[] = JSON.parse(localStorage.getItem("movies")!);
 
-    const handleSearchCriteriaByTitle = (e: any) => {
-      const moviesList: Movie[] = JSON.parse(localStorage.getItem("movies")!);
-      const filteredMovies: Movie[] = moviesList.filter(m => m.title.includes(e.target.value));
-      setMovies(filteredMovies);
-    };
+      if(titleFilter)
+        filteredMovies = filteredMovies.filter(m => 
+          m.language.toLowerCase().includes(e.target.value.toLowerCase()) && 
+          m.title.toLowerCase().includes(titleFilter.toLowerCase()));
+      else
+        filteredMovies = filteredMovies.filter(m => 
+          m.language.toLowerCase().includes(e.target.value.toLowerCase()));
 
-    const handleLocationChange = (e: any) => {
-      const moviesList: Movie[] = JSON.parse(localStorage.getItem("movies")!);
-      const filteredMovies: Movie[] = moviesList.filter(m => m.location.includes(e.target.value));
-      setMovies(filteredMovies);
-    };
+        setLanguageFilter(e.target.value);
+        setMovies(filteredMovies);
+      };
+        
+      const handleSearchCriteriaByTitle = (e: any) => {
+        let filteredMovies: Movie[] = JSON.parse(localStorage.getItem("movies")!);
 
-      const closeErrorModal = (): void => {
-        setShowErrorModal(!showErrorModal);
+        if(languageFilter)
+          filteredMovies = filteredMovies.filter(m => 
+            m.title.toLowerCase().includes(e.target.value.toLowerCase()) && 
+            m.language.toLowerCase().includes(languageFilter.toLowerCase()));
+        else
+          filteredMovies = filteredMovies.filter(m => 
+            m.title.toLowerCase().includes(e.target.value.toLowerCase()));
+
+        setTitleFilter(e.target.value);
+        setMovies(filteredMovies);
       };
 
-      const handlePageChange = (event: any, value: any): void => {
-        setPageNumber(value);
-      };
+        const closeErrorModal = (): void => {
+          setShowErrorModal(!showErrorModal);
+        };
+        
+        const handlePageChange = (event: any, value: any): void => {
+          setPageNumber(value);
+        };
 
     return (
         <main>
@@ -105,17 +138,20 @@ const Home: FunctionComponent<PropsWithChildren<HomePagePropsType>> = ({
 
                   <TextField
                     id="outlined-select-language"
+                    select
                     label="Select Movie Language"
                     onChange={handleLanguageChange}
                     className="moviesSelectLanguage"
-                  />
-
-                  <TextField
-                    id="outlined-select-location"
-                    label="Select Movie Location"
-                    onChange={handleLocationChange}
-                    className="moviesSelectLocation"
-                  />
+                  >
+                    <MenuItem aria-label="None" key="empty" value="">
+                      &nbsp;
+                    </MenuItem>
+                    {languages.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                          {option.label}
+                      </MenuItem>
+                    ))}
+                  </TextField>
 
             </Stack>
           </Container>
@@ -148,10 +184,6 @@ const Home: FunctionComponent<PropsWithChildren<HomePagePropsType>> = ({
                     <br/>
                     <Typography>
                       <strong>Language:</strong> {movie.language}
-                    </Typography>
-                    <br/>
-                    <Typography>
-                    <strong>Location:</strong> {movie.location}
                     </Typography>
                   </CardContent>
                   <CardActions>
