@@ -34,10 +34,10 @@ const ErrorModal: FunctionComponent<any> = ({isOpen, handleClose}) => {
             p: 4,
             }}>
                 <Typography id="transition-modal-title" variant="h6" component="h2">
-                Text in a modal
+                  Error
                 </Typography>
                 <Typography id="transition-modal-description" sx={{ mt: 2 }}>
-                Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+                  Something went wrong
                 </Typography>
           </Box>
         </Fade>
